@@ -1,0 +1,11 @@
+This program will act as a filter, removing adjacent duplicate lines 
+as it copies its stdin to its stdout. That is, any line that is identical
+to the previous line will be discarded rather than copied to stdout.
+
+There are no imposed limits on file size or line length.
+
+read long line(FILE *file) will read an arbitrarily long line 
+from the given file into newly-allocated space.
+
+The makefile has built in testcases. 
+- make test

@@ -1,0 +1,4 @@
+char arr[];
+int i = 0; /* Init i 
+here is a second line*/
+char a;

@@ -1,0 +1,14 @@
+Test input
+
+   no 		trailing 	blanks or tabs
+the next line is all tabs
+			
+the next line is all spaces
+            
+this has trailing spaces        
+this has trailing tabs			
+
+the above was a blank line
+
+
+the above two lines are blank lines.

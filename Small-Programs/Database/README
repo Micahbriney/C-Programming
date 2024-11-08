@@ -1,0 +1,38 @@
+make to compile the program.
+
+The program is a simple database. It parses the information from students.txt file.
+The file is formated as a cvs file: Student's lastname, Student's firstname, grade,
+classroom, bus, GPA, teacher's lastname, teacher's firstname.
+
+-----Welcome to the School Search tool.-----
+
+Please select one of the following options
+• S[tudent]: <lastname> [B[us]]
+• T[eacher]: <lastname>
+• B[us]: <number>
+• G[rade]: <number> [H[igh]|L[ow]]
+• A[verage]: <number>
+• I[nfo]
+• Q[uit]
+
+[Optional]
+<required>
+
+example searchs:
+
+-S COOKUS
+COOKUS,XUAN,3,107,FAFARD,ROCIO
+
+-BUS 52
+COOKUS,XUAN,3,107,FAFARD,ROCIO
+ELHADDAD,SHANTE,3,107,FAFARD,ROCIO
+IMMERMAN,DEVIN,4,105,HANTZ,JED
+OBREIN,STAN,6,111,NISTENDIRK,NANCY
+CORONADO,DIMPLE,6,102,KERBS,BENITO
+SARAO,DIEDRA,2,108,HAMER,GAVIN
+EARLY,TORY,3,107,FAFARD,ROCIO
+KEMERER,ROSETTA,6,102,KERBS,BENITO
+
+-B 107
+No record(s) found
+

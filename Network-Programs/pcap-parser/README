@@ -1,0 +1,12 @@
+Micah Briney
+mbrine@calpoly.edu
+
+Makefile Notes:
+
+make: build trace program
+make clean: clean object, emacs and executable file(s)
+make test: Tests each provided file, creates an output file then
+           runs diff on each *.pcap.out and *.out files (requires *.pcap
+	   and *.pcap.out files to be in same folder).
+
+

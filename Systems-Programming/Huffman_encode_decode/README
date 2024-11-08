@@ -1,0 +1,11 @@
+Micah Briney
+
+make will build file.
+
+I was unable to finish hencode. It is just missing the endocded bits on
+the output file. And Testing as well.
+
+hdecode only has option checking files from terminal and I/O redirection
+working. As well as empty file.
+
+

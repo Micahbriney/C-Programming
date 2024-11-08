@@ -1,0 +1,10 @@
+Micah Briney
+(mbriney)
+
+Just build with "Make"
+You can also test with "make test"
+
+Valgrind is telling me there are loads of "Invalid read of size 1" issues. I
+managed to fix about 150 of them by checking that size > 0 when doing strncpy.
+Still unsure why there are so many issues. Maybe because I am zeroing out
+the array that is passed to it?  

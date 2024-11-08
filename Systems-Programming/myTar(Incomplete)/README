@@ -1,0 +1,13 @@
+Micah Briney
+(mbriney)
+
+The program can compile and run but the status is incomplete.
+I almost had a fully functioning create mode. I was able to parse out all
+of the data but it still needs to be padded before being written to the 
+archive. The only ustar info left to get was the checksum value. Also 
+the data blocks function has not been implemented yet. 
+
+Extraction and table of contents have not been implemented yet.
+
+Option contol is included and has been tested. The Make file includes 37
+or so tests for the options.

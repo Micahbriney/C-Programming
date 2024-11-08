@@ -1,0 +1,14 @@
+Micah Briney
+(mbriney)
+
+make will build program.
+
+The program is incomplete. I was able to (I think) fork all the necessary
+children for each pipe/stage. I implemented pipe clean up but it still needs
+to be tested. I don't think the program is execing correctly still needs 
+testing for that also. Interrupt signal doesn't seem to be working as expected
+since it takes a while for the child processed to close.
+
+Also I am using the local library as that is what I was using during development
+and now that I am trying to build the file on the unix server its not compiling correctly
+something in the makefile perhaps. So i reverted back to using local stuff.
