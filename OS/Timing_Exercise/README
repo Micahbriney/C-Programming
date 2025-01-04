@@ -1,0 +1,56 @@
+Micah Briney
+
+The fork() call will return 0 to the child process. This makes the while loop 
+condition false for the child process. The parent will wait for the child 
+process to complete. The child process will print out the value of “i”. When the 
+child terminates then the print buffer will flush stdout and print to the 
+terminal. After the child terminates the parents wait function will no longer 
+block and it will call printf with "Yo!". The string will be put into the buffer 
+and “i” will increment. The process will then loop again but this time both 
+child and parent have the string "Yo!" in the stdout buffer. So this time when 
+the child calls printf with “i” and terminates it will print out "Yo!1". The 
+parent will continue through the loop and its buffer will now hold "Yo!Yo!". The 
+parent/child forking and child terminating process will continue until i = 5. At 
+which point both parent and child will have "Yo!Yo!Yo!Yo!Yo!" in the buffer. 
+Then both parent and child will print out "Yo!Yo!Yo!Yo!Yo!5" because they will 
+both fail the while loop.
+
+Q. ./who_runs_first  | sort  | uniq -c What do you observe?
+1000 childparent
+499500 parent
+
+Q. Do you observe any changes?  What is your explanation for this?
+The printf() followed by a fflush() acts like unbuffered i/o. This is similar to 
+using write(). While printf() uses buffered i/o and will only output the stdout 
+when a newline is called or the process is ended. The difference between 
+buffered and unbuffered i/o explain the why printf() only resulted in 
+“childparent” while the other two resulted mostly in parentchild. 
+
+Q.
+There was a lot less consistency in the output. The 0.1 sleep seemed cause the race condition between parent and child to be more problematic.
+     26 parentchild
+      1 childparent
+     27 parentchild
+      2 childparent
+      2 parentchild
+      1 childparent
+    802 parentchild
+      1 childparent
+     14 parentchild
+      1 childparent
+    123 parentchild
+
+The 1 second sleep took a long time to complete and made the race condition even 
+worse.
+31 parentchild
+1 childparent
+3 parentchild
+1 childparent
+7 parentchild
+1 childparent
+9 parentchild
+1 childparent
+21 parentchild
+1 childparent
+22 parentchild
+…

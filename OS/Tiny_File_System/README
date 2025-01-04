@@ -1,0 +1,13 @@
+Micah Briney 
+
+The tinyFs works pretty well. There is still a lot of testing that
+needs to happen. As well as code clean up. There are a lot of commented out
+code.
+
+Some additional functionality are time stamp updates and file consistency checks.
+There are required magic numbers saved to the "disk" to be able to mount it. 
+There are checks between the file system variable to make sure nothing gets
+out of sync.
+The Free blocks are slightly imlemented using a doublly linked list. Allocating
+free blocks as inode blocks and data blocks works fine. I ran out of time for
+implementing writting data to them.
