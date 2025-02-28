@@ -1,0 +1,6 @@
+Micah Briney
+make will build the porgram.
+I can connect multiple clients. It seems the cclients with similair hostnames
+like client1 and client2 are considered a match. 
+Communication between clients is currently not working.
+Got Flag 1, 2 and 3 working. (Init, ACK, and ErrorACK)
