@@ -1,6 +1,7 @@
 .PHONY: all clean cleano
-# Makefile for CPE464 tcp test code
+# Makefile for database.c
 # Written by Micah Briney - October 2024
+# Updated - June 2025 added readlongline
 
 CC = gcc
 CFLAGS = -g -Wall
@@ -10,9 +11,9 @@ LDFLAGS = -g -Wall
 
 LIBS = 
 
-COMMON = database.o
-OBJS = database.o
-SRCS = database.c
+COMMON = database.o readlongline.o
+OBJS = database.o readlongline.o
+SRCS = database.c redlongline.c
 
 all:   database
 
