@@ -17,11 +17,22 @@
 #define MIN_GRADE 0
 #define MAX_GPA 5.0
 #define MIN_GPA 0.0
+// Print Flag Masks
+#define ST_LAST_FLAG    (1 << 0) // 0000 0001
+#define ST_FIRST_FLAG   (1 << 1) // 0000 0010
+#define STUDENT_FN_FLAG (ST_LAST_FLAG | ST_FIRST_FLAG)
+#define GRADE_FLAG      (1 << 2) // 0000 0100
+#define CLASS_FLAG      (1 << 3) // 0000 1000
+#define BUS_FLAG        (1 << 4) // 0001 0000
+#define GPA_FLAG        (1 << 5) // 0010 0000
+#define TCH_LAST_FLAG   (1 << 6) // 0100 0000
+#define TCH_FIRST_FLAG  (1 << 7) // 1000 0000
+#define TEACHER_FN_FLAG (TCH_LAST_FLAG | TCH_FIRST_FLAG)
 
-enum PrintFlag {NO, YES};
-enum Validity {INVALID, VALID};
-enum Commands {QUIT, STUDENT, TEACHER, BUS, GRADE, AVERAGE, INFO};
-enum Fields {S_LAST, S_FIRST, S_GRADE, S_CLASSROOM, S_BUS, S_GPA, T_LAST, T_FIRST};
+enum PrintFlag  {NO, YES};
+enum Validity   {INVALID, VALID};
+enum Commands   {QUIT, STUDENT, TEACHER, BUS, GRADE, AVERAGE, INFO};
+enum Attributes {S_LAST, S_FIRST, S_GRADE, S_CLASSROOM, S_BUS, S_GPA, T_LAST, T_FIRST};
 
 typedef struct Student {
   char student_last[LAST_NAME_LEN], student_first[FIRST_NAME_LEN];
@@ -31,18 +42,7 @@ typedef struct Student {
 } Student;
 
 void printUserPrompt(void);
-void printFlags(int *st_last_flag,
-		            int *st_first_flag,
-                int *grade_flag,
-                int *class_flag,
-                int *bus_flag,
-                int *GPA_flag,
-                int *tch_last_flag,
-                int *tch_first_flag,
-                char *normalizedCmd,
-                char *lastname,
-                char *subcmd,
-                int grade);
+void printFlags(int *flags, char *cmd, char *lastname, char *subcmd, int grade);
 void toLower(char *userInput, int size);
 int isValidCommand(const char *cmd, const char *cmdWords[], int listSize);
 void findStudent(int *found, Student *studentRecords, int size, char *lastname);
@@ -53,17 +53,7 @@ float averageGPA(int *found, Student *studentRecords, int size);
 void printInfo(Student *studentRecords, int size);
 float findLowestGPA(int *found, Student *studentRecords, int size, int grade);
 float findHighestGPA(int *found, Student *studentRecords, int size, int grade);
-void printReport(int *found, 
-                 Student *studentRecords, 
-                 int size, 
-                 int st_last_flag,
-		             int st_first_flag,
-                 int grade_flag,
-                 int class_flag,
-                 int bus_flag,
-                 int GPA_flag,
-                 int tch_last_flag,
-                 int tch_first_flag);
+void printReport(int *found, Student *studentRecords, int size, int flag);
 void parseFile(Student *studentRecords);
 
 
@@ -73,18 +63,11 @@ int main(){
   char field[FIRST_NAME_LEN];     // Unknown userinput type
   char lastname[LAST_NAME_LEN];
   char subcmd[MAX_SUB_CMD_LEN];
-  // char words[WORDS_LEN];
   char words[INPUT_LEN];
   long int busOrGradeNum;      // Unknown purpose int
   // Print flags
-  int st_last_flag;
-  int st_first_flag;
-  int grade_flag;
-  int class_flag;
-  int bus_flag;
-  int GPA_flag;
-  int tch_last_flag;
-  int tch_first_flag;
+  int flags;
+
   // Ctrl flags
   int validCmd;
   int validSubCmd;
@@ -114,20 +97,9 @@ int main(){
   Student studentRecords[60] = {0};
   parseFile(studentRecords);
   
-  // #define st_last_flag 1
-  // #define st_first_flag 2
-  // #define st_first_flag 4
-
   while(quitCmd == NO){
     // initilize flags
-    st_last_flag = NO;
-    st_first_flag = NO;
-    grade_flag = NO;
-    class_flag = NO;
-    bus_flag = NO;
-    GPA_flag = NO;
-    tch_last_flag = NO;
-    tch_first_flag = NO;
+    flags = NO;
     validCmd = NO;
     validSubCmd = NO;
     quitCmd = NO;
@@ -191,18 +163,7 @@ int main(){
     }
         
     // Set print flags
-    printFlags(&st_last_flag,
-      &st_first_flag,
-      &grade_flag,
-      &class_flag,
-      &bus_flag,
-      &GPA_flag,
-      &tch_last_flag,
-      &tch_first_flag,
-      cmd,
-      lastname,
-      subcmd,
-      busOrGradeNum);
+    printFlags(&flags, cmd, lastname, subcmd, busOrGradeNum);
         
     switch (cmd[0]){
       case 's':
@@ -263,18 +224,7 @@ int main(){
       continue;
     }
         
-    printReport(found, 
-      studentRecords, 
-      sizeRecords, 
-      st_last_flag,
-      st_first_flag,
-      grade_flag,
-      class_flag,
-      bus_flag,
-      GPA_flag,
-      tch_last_flag,
-      tch_first_flag);
-        
+    printReport(found, studentRecords, sizeRecords, flags);         
   }
   return 0;
 }
@@ -295,105 +245,32 @@ void printUserPrompt(void){
 }
 
 
-void printFlags(int *st_last_flag,
-  int *st_first_flag,
-  int *grade_flag,
-  int *class_flag,
-  int *bus_flag,
-  int *GPA_flag,
-  int *tch_last_flag,
-  int *tch_first_flag,
-  char *cmd,
-  char *lastname,
-  char *subcmd,
-  int grade){
+void printFlags(int *flag, char *cmd, char *lastname, char *subcmd, int grade){
     
   switch (cmd[0]){
     case 's':
+      *flag |= STUDENT_FN_FLAG;
       if(subcmd[0] == 'b'){
-        *st_last_flag = YES;
-        *st_first_flag = YES;
-        *grade_flag = NO;
-        *class_flag = NO;
-        *bus_flag = YES;
-        *GPA_flag = NO;
-        *tch_last_flag = NO;
-        *tch_first_flag = NO;
-            
+        *flag |= BUS_FLAG;
         break;
       }
-      *st_last_flag = YES;
-      *st_first_flag = YES;
-      *grade_flag = YES;
-      *class_flag = YES;
-      *bus_flag = NO;
-      *GPA_flag = NO;
-      *tch_last_flag = YES;
-      *tch_first_flag = YES;
+      *flag |= GRADE_FLAG | CLASS_FLAG | TEACHER_FN_FLAG;
       break;
     case 't':
-      *st_last_flag = YES;
-      *st_first_flag = YES;
-      *grade_flag = YES;
-      *class_flag = NO;
-      *bus_flag = NO;
-      *GPA_flag = NO;
-      *tch_last_flag = NO;
-      *tch_first_flag = NO;   
+      *flag |= STUDENT_FN_FLAG | GRADE_FLAG;
       break;
     case 'b':
-      *st_last_flag = YES;
-      *st_first_flag = YES;
-      *grade_flag = YES;
-      *class_flag = YES;
-      *bus_flag = NO;
-      *GPA_flag = NO;
-      *tch_last_flag = YES;
-      *tch_first_flag = YES;
+      *flag |= STUDENT_FN_FLAG | GRADE_FLAG | CLASS_FLAG | TEACHER_FN_FLAG;
       break;
     case 'g':
-      if(subcmd[0] == 'h'){
-        *st_last_flag = YES;
-        *st_first_flag = YES;
-        *grade_flag = NO;
-        *class_flag = NO;
-        *bus_flag = YES;
-        *GPA_flag = YES;
-        *tch_last_flag = YES;
-        *tch_first_flag = YES;
-        // TODO Search for highest GPA function call
+      *flag |= STUDENT_FN_FLAG;
+      if(subcmd[0] == 'h' || subcmd[0] == 'l'){
+        *flag |= BUS_FLAG | GPA_FLAG | TEACHER_FN_FLAG;
         break;
       }
-      else if(subcmd[0] == 'l'){
-        *st_last_flag = YES;
-        *st_first_flag = YES;
-        *grade_flag = NO;
-        *class_flag = NO;
-        *bus_flag = YES;
-        *GPA_flag = YES;
-        *tch_last_flag = YES;
-        *tch_first_flag = YES;
-        // TODO Search for lowest GPA function call
-        break;
-      }
-      *st_last_flag = YES;
-      *st_first_flag = YES;
-      *grade_flag = NO;
-      *class_flag = NO;
-      *bus_flag = NO;
-      *GPA_flag = NO;
-      *tch_last_flag = NO;
-      *tch_first_flag = NO;
       break;
     case 'a':
-      *st_last_flag = NO;
-      *st_first_flag = NO;
-      *grade_flag = YES;
-      *class_flag = NO;
-      *bus_flag = NO;
-      *GPA_flag = NO;
-      *tch_last_flag = NO;
-      *tch_first_flag = NO;
+      *flag |= GRADE_FLAG;
       break;
     case 'q':
       //End Program
@@ -573,41 +450,33 @@ float findHighestGPA(int *found, Student *studentRecords, int size, int grade){
 }
 
 
-void printReport(int *found, Student *studentRecords, int size, 
-		 int st_last_flag,
-		 int st_first_flag,
-		 int grade_flag,
-		 int class_flag,
-		 int bus_flag,
-		 int GPA_flag,
-		 int tch_last_flag,
-		 int tch_first_flag){
+void printReport(int *found, Student *studentRecords, int size, int flags){
   
   // TODO Solve for possible comma issues
   for(int i = 0; i < size; i++){
     if(found[i] == 1){
-      if(st_last_flag){
+      if(flags & ST_LAST_FLAG){
 	      printf("%s", studentRecords[i].student_last);
       }
-      if(st_first_flag){
+      if(flags & ST_FIRST_FLAG){
 	      printf(",%s", studentRecords[i].student_first);
       }
-      if(grade_flag){
+      if(flags & GRADE_FLAG){
 	      printf(",%d", studentRecords[i].grade);
       }
-      if(class_flag){
+      if(flags & CLASS_FLAG){
 	      printf(",%d", studentRecords[i].classroom);
       }
-      if(bus_flag){
+      if(flags & BUS_FLAG){
 	      printf(",%d", studentRecords[i].bus);
       }
-      if(GPA_flag){
+      if(flags & GPA_FLAG){
 	      printf(",%0.2f", studentRecords[i].GPA);
       }
-      if(tch_last_flag){
+      if(flags & TCH_LAST_FLAG){
 	      printf(",%s", studentRecords[i].teacher_last);
       }
-      if(tch_first_flag){
+      if(flags & TCH_FIRST_FLAG){
 	      printf(",%s", studentRecords[i].teacher_first);
       }
       printf("\n");
